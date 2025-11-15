@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { prisma } from '@callrep/database';
-import { ListRepresentativesResponse } from '@callrep/shared';
+import { prisma } from '@aidvocacy/database';
+import { ListRepresentativesResponse } from '@aidvocacy/shared';
 import { listRepresentativesSchema } from '../utils/validation';
 
 export const representativesRouter = Router();

@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { MakeCallRequest, MakeCallResponse } from '@callrep/shared';
+import { MakeCallRequest, MakeCallResponse } from '@aidvocacy/shared';
 import { twilioService } from './services/twilioService';
 import { ApiCallbackService } from './services/apiCallbackService';
 

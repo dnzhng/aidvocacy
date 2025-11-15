@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { CreateCallRequest, CreateCallResponse, GetCallResponse, CallStatus } from '@callrep/shared';
+import { CreateCallRequest, CreateCallResponse, GetCallResponse, CallStatus } from '@aidvocacy/shared';
 import { createCallSchema } from '../utils/validation';
 import { CallService } from '../services/callService';
 

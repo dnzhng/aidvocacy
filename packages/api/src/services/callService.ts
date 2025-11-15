@@ -1,5 +1,5 @@
-import { prisma } from '@callrep/database';
-import { NotFoundError, ValidationError, MakeCallRequest } from '@callrep/shared';
+import { prisma } from '@aidvocacy/database';
+import { NotFoundError, ValidationError, MakeCallRequest } from '@aidvocacy/shared';
 import { ScriptModifier } from './scriptModifier';
 import axios from 'axios';
 

@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { prisma } from '@callrep/database';
-import { ListPersonasResponse } from '@callrep/shared';
+import { prisma } from '@aidvocacy/database';
+import { ListPersonasResponse } from '@aidvocacy/shared';
 
 export const personasRouter = Router();
 

@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { prisma } from '@callrep/database';
-import { ListIssuesResponse } from '@callrep/shared';
+import { prisma } from '@aidvocacy/database';
+import { ListIssuesResponse } from '@aidvocacy/shared';
 import { listIssuesSchema } from '../utils/validation';
 
 export const issuesRouter = Router();

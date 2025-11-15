@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ValidationError, NotFoundError, ServiceError } from '@callrep/shared';
+import { ValidationError, NotFoundError, ServiceError } from '@aidvocacy/shared';
 import { ZodError } from 'zod';
 
 export function errorHandler(

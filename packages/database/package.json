@@ -1,5 +1,5 @@
 {
-  "name": "@callrep/database",
+  "name": "@aidvocacy/database",
   "version": "1.0.0",
   "description": "Database schema and migrations for advocacy calling system",
   "main": "index.ts",

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CallStatusUpdate } from '@callrep/shared';
+import { CallStatusUpdate } from '@aidvocacy/shared';
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3001';
 

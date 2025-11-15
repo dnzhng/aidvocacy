@@ -43,7 +43,7 @@ This is a monorepo with the following packages:
 
 ```bash
 git clone <repository-url>
-cd callrep
+cd aidvocacy
 npm install
 ```
 
@@ -51,7 +51,7 @@ npm install
 
 ```bash
 # Create a PostgreSQL database
-createdb callrep
+createdb aidvocacy
 
 # Set up environment variables
 cp packages/database/.env.example packages/database/.env
@@ -132,9 +132,9 @@ npm run dev:frontend   # Frontend on port 3000
 npm test
 
 # Run tests for specific package
-npm test -w @callrep/api
-npm test -w @callrep/agent-service
-npm test -w @callrep/frontend
+npm test -w @aidvocacy/api
+npm test -w @aidvocacy/agent-service
+npm test -w @aidvocacy/frontend
 ```
 
 ### Database Management
@@ -154,7 +154,7 @@ npx prisma migrate reset
 ### Project Structure
 
 ```
-callrep/
+aidvocacy/
 ├── packages/
 │   ├── database/           # Prisma schema and migrations
 │   │   ├── schema.prisma

@@ -8,14 +8,14 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm:dev:*\"",
-    "dev:api": "npm run dev -w @callrep/api",
-    "dev:agent": "npm run dev -w @callrep/agent-service",
-    "dev:frontend": "npm run dev -w @callrep/frontend",
-    "build": "npm run build -w @callrep/database && npm run build -w @callrep/shared && npm run build -w @callrep/api && npm run build -w @callrep/agent-service && npm run build -w @callrep/frontend",
-    "test": "npm run test -w @callrep/api && npm run test -w @callrep/agent-service && npm run test -w @callrep/frontend",
-    "db:migrate": "npm run migrate -w @callrep/database",
-    "db:seed": "npm run seed -w @callrep/database",
-    "db:studio": "npm run studio -w @callrep/database"
+    "dev:api": "npm run dev -w @aidvocacy/api",
+    "dev:agent": "npm run dev -w @aidvocacy/agent-service",
+    "dev:frontend": "npm run dev -w @aidvocacy/frontend",
+    "build": "npm run build -w @aidvocacy/database && npm run build -w @aidvocacy/shared && npm run build -w @aidvocacy/api && npm run build -w @aidvocacy/agent-service && npm run build -w @aidvocacy/frontend",
+    "test": "npm run test -w @aidvocacy/api && npm run test -w @aidvocacy/agent-service && npm run test -w @aidvocacy/frontend",
+    "db:migrate": "npm run migrate -w @aidvocacy/database",
+    "db:seed": "npm run seed -w @aidvocacy/database",
+    "db:studio": "npm run studio -w @aidvocacy/database"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

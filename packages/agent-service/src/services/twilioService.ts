@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import { MenuStep } from '@callrep/shared';
+import { MenuStep } from '@aidvocacy/shared';
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
