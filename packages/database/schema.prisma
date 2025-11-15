@@ -1,0 +1,139 @@
+// Prisma schema for Advocacy Call Agent
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Representative {
+  id          String   @id @default(cuid())
+  name        String
+  title       String   // e.g., "Senator", "Representative"
+  state       String   // e.g., "CA", "NY"
+  district    String?  // For House representatives
+  phoneNumber String
+  email       String?
+  party       String?  // e.g., "Democrat", "Republican", "Independent"
+  photoUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  issues RepresentativeIssue[]
+  calls  Call[]
+
+  @@index([state])
+  @@index([name])
+}
+
+model Issue {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  category    String   // e.g., "Environment", "Healthcare", "Education"
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  representatives RepresentativeIssue[]
+  scripts         Script[]
+
+  @@index([category])
+  @@index([active])
+}
+
+// Join table for many-to-many relationship
+model RepresentativeIssue {
+  id               String         @id @default(cuid())
+  representativeId String
+  issueId          String
+  representative   Representative @relation(fields: [representativeId], references: [id], onDelete: Cascade)
+  issue            Issue          @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+
+  @@unique([representativeId, issueId])
+  @@index([representativeId])
+  @@index([issueId])
+}
+
+model Script {
+  id          String   @id @default(cuid())
+  issueId     String
+  title       String
+  content     String   @db.Text
+  description String?
+  active      Boolean  @default(true)
+  // Menu navigation instructions for automated systems
+  menuSteps   Json?    // e.g., [{"waitFor": "press 1", "action": "1"}, {"waitFor": "representative", "action": "wait"}]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  issue Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  calls Call[]
+
+  @@index([issueId])
+  @@index([active])
+}
+
+model Persona {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  tone        String   // e.g., "professional", "passionate", "concerned"
+  // Instructions for how to modify the script
+  modifiers   Json     // e.g., {"formality": "high", "emotion": "moderate", "length": "concise"}
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  calls Call[]
+
+  @@index([active])
+}
+
+model Call {
+  id               String         @id @default(cuid())
+  representativeId String
+  scriptId         String
+  personaId        String
+
+  // Modified script used for this call
+  modifiedScript   String         @db.Text
+
+  // Call details
+  status           CallStatus     @default(PENDING)
+  twilioCallSid    String?        @unique
+  phoneNumber      String
+  duration         Int?           // in seconds
+  transcript       String?        @db.Text
+  recording        String?        // URL to recording
+
+  // Error handling
+  errorMessage     String?        @db.Text
+  retryCount       Int            @default(0)
+
+  createdAt        DateTime       @default(now())
+  completedAt      DateTime?
+
+  representative   Representative @relation(fields: [representativeId], references: [id])
+  script           Script         @relation(fields: [scriptId], references: [id])
+  persona          Persona        @relation(fields: [personaId], references: [id])
+
+  @@index([representativeId])
+  @@index([scriptId])
+  @@index([personaId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum CallStatus {
+  PENDING
+  QUEUED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}

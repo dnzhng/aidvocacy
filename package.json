@@ -1,0 +1,27 @@
+{
+  "name": "advocacy-call-agent",
+  "version": "1.0.0",
+  "description": "AI-powered advocacy calling system to help users contact their representatives",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:api": "npm run dev -w @callrep/api",
+    "dev:agent": "npm run dev -w @callrep/agent-service",
+    "dev:frontend": "npm run dev -w @callrep/frontend",
+    "build": "npm run build -w @callrep/database && npm run build -w @callrep/shared && npm run build -w @callrep/api && npm run build -w @callrep/agent-service && npm run build -w @callrep/frontend",
+    "test": "npm run test -w @callrep/api && npm run test -w @callrep/agent-service && npm run test -w @callrep/frontend",
+    "db:migrate": "npm run migrate -w @callrep/database",
+    "db:seed": "npm run seed -w @callrep/database",
+    "db:studio": "npm run studio -w @callrep/database"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
