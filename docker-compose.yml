@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: aidvocacy-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-aidvocacy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aidvocacy_password}
+      POSTGRES_DB: ${POSTGRES_DB:-aidvocacy}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aidvocacy}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aidvocacy-network
+
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    container_name: aidvocacy-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3001
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aidvocacy}:${POSTGRES_PASSWORD:-aidvocacy_password}@postgres:5432/${POSTGRES_DB:-aidvocacy}?schema=public
+      AGENT_SERVICE_URL: http://agent-service:3002
+      SEED_DATABASE: ${SEED_DATABASE:-false}
+    ports:
+      - "${API_PORT:-3001}:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - aidvocacy-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Agent Service (Twilio AI)
+  agent-service:
+    build:
+      context: .
+      dockerfile: packages/agent-service/Dockerfile
+    container_name: aidvocacy-agent
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3002
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      API_BASE_URL: http://api:3001
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3002}
+    ports:
+      - "${AGENT_PORT:-3002}:3002"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - aidvocacy-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend (React)
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+    container_name: aidvocacy-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - api
+    networks:
+      - aidvocacy-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  aidvocacy-network:
+    driver: bridge

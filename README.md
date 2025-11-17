@@ -39,6 +39,114 @@ This is a monorepo with the following packages:
 
 ## Getting Started
 
+You can run this application either using Docker (recommended for quick setup) or local development setup.
+
+### Quick Start with Docker (Recommended)
+
+Docker provides the easiest way to get started with all services running:
+
+#### 1. Prerequisites
+- Docker 20.10+ and Docker Compose 2.0+
+
+#### 2. Setup Environment
+```bash
+# Copy the Docker environment template
+cp .env.docker.example .env
+
+# Edit .env and configure:
+# - Twilio credentials (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)
+# - OpenAI API key (OPENAI_API_KEY)
+# - Public URL for webhooks (PUBLIC_URL)
+# - Optionally enable database seeding (SEED_DATABASE=true)
+```
+
+#### 3. Start All Services
+```bash
+# Build and start all services (frontend, API, agent-service, PostgreSQL)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Check service status
+docker-compose ps
+```
+
+#### 4. Access the Application
+- **Frontend**: http://localhost:3000
+- **API**: http://localhost:3001
+- **Agent Service**: http://localhost:3002
+- **PostgreSQL**: localhost:5432
+
+#### 5. Setup Twilio Webhooks
+Since Twilio needs public access to the agent service, use ngrok:
+```bash
+ngrok http 3002
+```
+Update `PUBLIC_URL` in `.env` with the ngrok URL and restart:
+```bash
+docker-compose restart agent-service
+```
+
+#### 6. Stop Services
+```bash
+# Stop all services
+docker-compose down
+
+# Stop and remove volumes (deletes database data)
+docker-compose down -v
+```
+
+### Docker Commands Reference
+
+```bash
+# Rebuild services after code changes
+docker-compose build
+
+# Rebuild specific service
+docker-compose build api
+
+# View logs for specific service
+docker-compose logs -f api
+
+# Run database migrations manually
+docker-compose exec api sh -c "cd /app/packages/database && npx prisma migrate deploy"
+
+# Access database with psql
+docker-compose exec postgres psql -U aidvocacy -d aidvocacy
+
+# Open a shell in a container
+docker-compose exec api sh
+```
+
+### Production Deployment with Docker
+
+For production deployment, use the production compose file:
+
+```bash
+# Copy and configure production environment
+cp .env.docker.example .env.prod
+
+# Edit .env.prod with production settings:
+# - Strong database passwords
+# - Production domain for PUBLIC_URL
+# - Set NODE_ENV=production
+# - Configure SSL certificates in nginx/ssl/
+
+# Start production stack
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# The production setup includes:
+# - Nginx reverse proxy with SSL support
+# - Resource limits for each service
+# - Health checks and auto-restart
+# - Database backup volume mount
+```
+
+### Local Development Setup
+
+If you prefer running services locally without Docker:
+
 ### 1. Clone and Install
 
 ```bash
